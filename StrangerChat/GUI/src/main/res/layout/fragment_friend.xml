@@ -1,0 +1,227 @@
+<!-- fragment_edit_name.xml -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/edit_name"
+    android:layout_width="wrap_content" android:layout_height="wrap_content"
+    android:layout_gravity="center" android:orientation="vertical"
+    android:weightSum="1"
+    android:background="@color/white_opaque">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Thoose Group"
+        android:id="@+id/textView"
+
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dip" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/TL"
+        android:layout_below="@+id/textView"
+        android:layout_margin="@dimen/groupMargin">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/TLtopLeft"
+            android:layout_weight="1"
+            android:src="@mipmap/ic_phot"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/TLtopRight"
+            android:layout_weight="1"
+            android:layout_toRightOf="@+id/TLtopLeft"
+            android:src="@mipmap/ic_phot"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/TLbuttonLeft"
+            android:layout_weight="1"
+            android:src="@mipmap/ic_phot"
+            android:layout_below="@+id/TLtopLeft"
+            />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/TLbuttonRight"
+            android:layout_weight="3"
+            android:layout_toRightOf="@+id/TLtopLeft"
+            android:layout_below="@+id/TLtopLeft"
+
+            android:src="@mipmap/ic_phot"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Group 1"
+            android:id="@+id/TLgroupTL"
+            android:layout_below="@+id/TLbuttonLeft"
+            android:layout_centerHorizontal="true"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/TL"
+        android:layout_below="@+id/textView"
+        android:layout_margin="@dimen/groupMargin"
+        android:id="@+id/TR"
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/TRtopLeft"
+            android:layout_weight="1"
+            android:src="@mipmap/ic_phot"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/TRtopRight"
+            android:layout_weight="1"
+            android:layout_toRightOf="@+id/TRtopLeft"
+            android:src="@mipmap/ic_phot"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/TRbuttonLeft"
+            android:layout_weight="1"
+            android:src="@mipmap/ic_phot"
+            android:layout_below="@+id/TRtopLeft"
+            />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/TRbuttonRight"
+            android:layout_weight="3"
+            android:layout_toRightOf="@+id/TRtopLeft"
+            android:layout_below="@+id/TRtopLeft"
+
+            android:src="@mipmap/ic_phot"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Group 2"
+            android:id="@+id/groupTL"
+            android:layout_below="@+id/TRbuttonLeft"
+            android:layout_centerHorizontal="true"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/TL"
+        android:layout_margin="@dimen/groupMargin"
+        android:id="@+id/BL"
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/BLtopLeft"
+            android:layout_weight="1"
+            android:src="@mipmap/ic_phot"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/BLtopRight"
+            android:layout_weight="1"
+            android:layout_toRightOf="@+id/BLtopLeft"
+            android:src="@mipmap/ic_phot"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/BLbuttonLeft"
+            android:layout_weight="1"
+            android:src="@mipmap/ic_phot"
+            android:layout_below="@+id/BLtopLeft"
+            />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/BLbuttonRight"
+            android:layout_weight="3"
+            android:layout_toRightOf="@+id/BLtopLeft"
+            android:layout_below="@+id/BLtopLeft"
+
+            android:src="@mipmap/ic_phot"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Button Left"
+            android:id="@+id/groupBL"
+            android:layout_below="@+id/BLbuttonLeft"
+            android:layout_centerHorizontal="true"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/TR"
+        android:layout_toRightOf="@+id/TL"
+        android:layout_margin="@dimen/groupMargin"
+        android:id="@+id/BR"
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/BRtopLeft"
+            android:layout_weight="1"
+            android:src="@mipmap/ic_phot"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/BRtopRight"
+            android:layout_weight="1"
+            android:layout_toRightOf="@+id/BRtopLeft"
+            android:src="@mipmap/ic_phot"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/BRbuttonLeft"
+            android:layout_weight="1"
+            android:src="@mipmap/ic_phot"
+            android:layout_below="@+id/BRtopLeft"
+            />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/BRbuttonRight"
+            android:layout_weight="3"
+            android:layout_toRightOf="@+id/BRtopLeft"
+            android:layout_below="@+id/BRtopLeft"
+
+            android:src="@mipmap/ic_phot"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Button Right"
+            android:id="@+id/groupBR"
+            android:layout_below="@+id/BRbuttonLeft"
+            android:layout_centerHorizontal="true"
+            />
+    </RelativeLayout>
+
+
+
+
+
+</RelativeLayout>
