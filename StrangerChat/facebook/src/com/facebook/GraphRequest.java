@@ -295,7 +295,11 @@ public class GraphRequest {
             @Override
             public void onCompleted(GraphResponse response) {
                 if (callback != null) {
-                    callback.onCompleted(response.getJSONObject(), response);
+                    try {
+                        callback.onCompleted(response.getJSONObject(), response);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         };
@@ -2107,7 +2111,7 @@ public class GraphRequest {
          * @param response the Response of this request, which may include error information if the
          *                 request was unsuccessful
          */
-        void onCompleted(JSONObject object, GraphResponse response);
+        void onCompleted(JSONObject object, GraphResponse response) throws JSONException;
     }
 
     /**

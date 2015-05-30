@@ -21,10 +21,16 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
+import com.facebook.internal.FacebookRequestErrorClassification;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,7 +38,10 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Date;
 
+import Cache.Cache;
 
 
 public class MainFragment extends Fragment {
@@ -53,12 +62,39 @@ public class MainFragment extends Fragment {
             AccessToken accessToken;
             accessToken = loginResult.getAccessToken();
 
-
-
+            String res = loginResult.toString();
             Profile profile;
             profile = Profile.getCurrentProfile();
 
+            String userId = profile.getId();
+            String name = profile.getName();
 
+            Cache.CurrentUser.Id = userId;
+            Cache.CurrentUser.Name = name;
+
+            String profilePic = profile.getProfilePictureUri(500,500).toString();
+            GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+                @Override
+                public void onCompleted(JSONObject object, GraphResponse response) throws JSONException {
+
+                    Log.d("response", response.toString());
+                    Log.d("Object", object.toString());
+                }
+            });
+
+            Bundle parameters = new Bundle();
+            parameters.putString("fields", "id,name,email,gender, birthday");
+            request.setParameters(parameters);
+
+
+
+
+            //Cache.CurrentUser()
+
+            Intent intent = new Intent(getActivity(), GuiActivity.class);
+            ((MainActivity)getActivity()).startActivity(intent);
+
+            ((MainActivity)getActivity()).finish();
 
             if(profile != null)
             {
@@ -157,8 +193,8 @@ public class MainFragment extends Fragment {
         mTextDetails = (TextView) view.findViewById(R.id.text_details);
 
         LoginButton loginButton = (LoginButton) view.findViewById(R.id.login_button);
-        loginButton.setReadPermissions("user_friends");
-        loginButton.setFragment(this);
+        loginButton.setReadPermissions("user_birthday");
+                loginButton.setFragment(this);
         loginButton.registerCallback(mCallbackManager, mCallBack);
 
 

@@ -7,12 +7,22 @@ import java.util.Date;
  */
 public class Person {
 
+    public Person(String id, String name, String sex, Date birthDay, String picUrl, double latitude, double longitude)
+    {
+        this.Id = id;
+        this.Name = name;
+        this.BirthDay = birthDay;
+        this.PicUrl = picUrl;
+        this.Latitude = latitude;
+        this.Longitude = longitude;
+
+    }
+
     public String Id;
     public String Name;
     public String Sex;
     public Date BirthDay;
     public boolean Available;
-    public double Distance;
     public String PicUrl;
     public double Longitude;
     public double Latitude;
