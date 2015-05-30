@@ -30,7 +30,7 @@ public class RESTHelper {
 
 
     // Finds a random available person
-    public Person FindStranger(Person person, double longtitude, double latitude, double radius, String sex, int minAge, int maxAge)
+    public Person FindStranger(Person person, double radius, String sex, int minAge, int maxAge)
     {
         URL requestUrl;
         HttpURLConnection con = null;
@@ -38,7 +38,7 @@ public class RESTHelper {
         InputStream response = null;
 
         try {
-            requestUrl = new URL("http://strangerchat.azure-mobile.net/Api/findstranger?longtitude="+longtitude+"&latitude="+latitude+"&radius="+radius+"&sex="+sex+"&minAge="+minAge+"&maxAge="+maxAge);
+            requestUrl = new URL("http://strangerchat.azure-mobile.net/Api/findstranger?radius="+radius+"&sex="+sex+"&minAge="+minAge+"&maxAge="+maxAge);
 
             con = (HttpURLConnection) requestUrl.openConnection();
             con.setRequestMethod("POST");
