@@ -1,4 +1,4 @@
-package han.recycleviewertest;
+package com.strangerchat.strangerchat;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

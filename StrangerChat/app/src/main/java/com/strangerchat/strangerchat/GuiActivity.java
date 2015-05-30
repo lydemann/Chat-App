@@ -1,4 +1,4 @@
-package han.recycleviewertest;
+package com.strangerchat.strangerchat;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,11 +9,12 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends Activity implements OnItemRecycleViewClickListener {
+public class GuiActivity extends Activity implements OnItemRecycleViewClickListener {
 
     RecyclerView mRecyclerView;
     private List<Data> mData = new ArrayList<>();
@@ -29,7 +30,7 @@ public class MainActivity extends Activity implements OnItemRecycleViewClickList
           mData.add(new Data("Far"+ x, "Yo, pikfjs, hva sker der for dig"));
           mData.add(new Data("Bror" + x, "Yo, pikfj, hva sker der for dig"));
         }
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main2);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.idRecyclerView);
         RelativeLayout StrangerLayout =(RelativeLayout)findViewById(R.id.StrangerLayout);//starnger chatt knappen

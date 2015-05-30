@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
@@ -31,6 +32,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+
 
 
 public class MainFragment extends Fragment {
@@ -157,8 +159,18 @@ public class MainFragment extends Fragment {
         LoginButton loginButton = (LoginButton) view.findViewById(R.id.login_button);
         loginButton.setReadPermissions("user_friends");
         loginButton.setFragment(this);
-        loginButton.registerCallback(mCallbackManager,mCallBack);
+        loginButton.registerCallback(mCallbackManager, mCallBack);
 
+
+        Button skipButton = (Button) view.findViewById(R.id.skip_button);
+
+        skipButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), GuiActivity.class);
+                ((MainActivity)getActivity()).startActivity(intent);
+            }
+        });
 
 
 

@@ -1,4 +1,4 @@
-package han.recycleviewertest;
+package com.strangerchat.strangerchat;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;

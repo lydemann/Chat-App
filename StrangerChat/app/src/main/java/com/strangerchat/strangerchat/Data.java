@@ -1,4 +1,4 @@
-package han.recycleviewertest;
+package com.strangerchat.strangerchat;
 
 public class Data {
     public String name;
