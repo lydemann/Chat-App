@@ -26,9 +26,11 @@ import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.internal.FacebookRequestErrorClassification;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,6 +42,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import Cache.Cache;
 
@@ -59,6 +62,7 @@ public class MainFragment extends Fragment {
         @Override
         public void onSuccess(LoginResult loginResult) {
 
+
             AccessToken accessToken;
             accessToken = loginResult.getAccessToken();
 
@@ -69,11 +73,12 @@ public class MainFragment extends Fragment {
             String userId = profile.getId();
             String name = profile.getName();
 
+
             Cache.CurrentUser.Id = userId;
             Cache.CurrentUser.Name = name;
 
-            String profilePic = profile.getProfilePictureUri(500,500).toString();
-            GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+            String profilePic = profile.getProfilePictureUri(500, 500).toString();
+            GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
                 @Override
                 public void onCompleted(JSONObject object, GraphResponse response) throws JSONException {
 
@@ -82,10 +87,22 @@ public class MainFragment extends Fragment {
                 }
             });
 
-            Bundle parameters = new Bundle();
-            parameters.putString("fields", "id,name,email,gender, birthday");
-            request.setParameters(parameters);
+            request = GraphRequest.newMyFriendsRequest(accessToken, new GraphRequest.GraphJSONArrayCallback() {
+                @Override
+                public void onCompleted(JSONArray objects, GraphResponse response) {
 
+                }
+            });
+
+            Bundle parameters = new Bundle();
+            parameters.putString("fields", "id,name,email,gender,birthday");
+            request.setParameters(parameters);
+            request.executeAsync();
+            JSONObject jsonObject = request.getGraphObject();
+
+
+
+            // TODO: Get friendlist and birthday
 
 
 
@@ -192,9 +209,13 @@ public class MainFragment extends Fragment {
 
         mTextDetails = (TextView) view.findViewById(R.id.text_details);
 
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("user_birthday"));
+        LoginManager.getInstance().registerCallback(mCallbackManager, mCallBack);
+
         LoginButton loginButton = (LoginButton) view.findViewById(R.id.login_button);
-        loginButton.setReadPermissions("user_birthday");
-                loginButton.setFragment(this);
+        loginButton.setFragment(this);
+
+        loginButton.setReadPermissions(Arrays.asList("user_birthday"));
         loginButton.registerCallback(mCallbackManager, mCallBack);
 
 
@@ -204,7 +225,7 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), GuiActivity.class);
-                ((MainActivity)getActivity()).startActivity(intent);
+                ((MainActivity) getActivity()).startActivity(intent);
             }
         });
 
