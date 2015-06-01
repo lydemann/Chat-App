@@ -104,7 +104,6 @@ String tag = "MessageActivity";
         public void onReceive(Context context, Intent intent) {
             String str = intent.getStringExtra("msg");
             String str1 = intent.getStringExtra("fromname");
-            String str2 = intent.getStringExtra("fromu");
 
 
                 TableRow tr1 = new TableRow(getApplicationContext());

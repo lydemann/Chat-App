@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Cache.Cache;
+import Models.ChatRoom;
 import Models.Person;
 import RESTHelper.RESTHelper;
 import Utility.Utilities;
@@ -39,15 +40,17 @@ public class GuiActivity extends Activity implements OnItemRecycleViewClickListe
     public static GoogleCloudMessaging gcm;
     public static NotificationHub hub;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        for(int x = 10; x < 20; x =x+1) {
-          mData.add(new Data("Mor" + x, "Yo, pikfjs, hva sker der for dig"));
-          mData.add(new Data("Far"+ x, "Yo, pikfjs, hva sker der for dig"));
-          mData.add(new Data("Bror" + x, "Yo, pikfj, hva sker der for dig"));
-        }
+        // get a persons chatrooms
+
+        getPersonChatrooms();
+
+          mData.add(new Data("Mor", "Yo, pikfjs, hva sker der for dig"));
+
         setContentView(R.layout.activity_main2);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.idRecyclerView);
@@ -96,6 +99,7 @@ public class GuiActivity extends Activity implements OnItemRecycleViewClickListe
                 try {
                     String regid = gcm.register(Utilities.SENDER_ID);
                     hub.register(regid, "Person"+Cache.CurrentUser.Id); // default id is 0
+                    Log.d("RegDevice","Person"+Cache.CurrentUser.Id);
 
                 } catch (Exception e) {
                     DialogNotify("Exception",e.getMessage());
@@ -105,6 +109,26 @@ public class GuiActivity extends Activity implements OnItemRecycleViewClickListe
             }
         }.execute(null, null, null);
     }
+
+
+    private void getPersonChatrooms() {
+        new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object... params) {
+                try {
+                    //get a persons chatrooms
+
+
+
+
+                } catch (Exception e) {
+
+                }
+                return null;
+            }
+        }.execute(null, null, null);
+    }
+
 
     /**
      * A modal AlertDialog for displaying a message on the UI thread

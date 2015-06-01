@@ -40,12 +40,12 @@ public class MyHandler extends NotificationsHandler{
         mNotificationManager = (NotificationManager)
                 ctx.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // todo if chat message update chatroom
+        // if chat message update chatroom
 
         if (msg.contains("Message from"))
         {
             // send broadcast to update chat
-            sendBroadcast();
+            sendBroadcast(msg,"Stranger");
 
         }
 
@@ -68,11 +68,14 @@ public class MyHandler extends NotificationsHandler{
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
     }
 
-    private void sendBroadcast() {
+    private void sendBroadcast(String msg, String fromName) {
 
 
-        Intent BroadcastIntent = new Intent ("Msg");
-        LocalBroadcastManager.getInstance(ctx).sendBroadcast(BroadcastIntent);
+        Intent broadcastIntent = new Intent ("Msg");
+        broadcastIntent.putExtra("msg", msg);
+        broadcastIntent.putExtra("fromname", fromName);
+
+        LocalBroadcastManager.getInstance(ctx).sendBroadcast(broadcastIntent);
 
         }
     }
