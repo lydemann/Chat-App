@@ -4,14 +4,17 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
-
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.microsoft.windowsazure.messaging.NotificationHub;
@@ -21,13 +24,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Cache.Cache;
+import Models.Person;
+import RESTHelper.RESTHelper;
 import Utility.Utilities;
 
 
 public class GuiActivity extends Activity implements OnItemRecycleViewClickListener {
 
     RecyclerView mRecyclerView;
+    TextView stranger;
     private List<Data> mData = new ArrayList<>();
+    RESTHelper rest = new RESTHelper();
 
     public static GoogleCloudMessaging gcm;
     public static NotificationHub hub;
@@ -44,6 +51,7 @@ public class GuiActivity extends Activity implements OnItemRecycleViewClickListe
         setContentView(R.layout.activity_main2);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.idRecyclerView);
+        stranger = (TextView) findViewById(R.id.txt1);
         RelativeLayout StrangerLayout =(RelativeLayout)findViewById(R.id.StrangerLayout);//starnger chatt knappen
 
         LinearLayoutManager mLinearManager = new LinearLayoutManager(this);
@@ -132,6 +140,44 @@ public class GuiActivity extends Activity implements OnItemRecycleViewClickListe
     @Override
     public void onItemClicked(int position, RecyclerAdapter mAdapter) {
         Toast.makeText(this, String.valueOf(position), Toast.LENGTH_LONG).show();
+    }
+
+    //Online offline toogle
+    public void onToggleClicked(View view) {
+        // Is the toggle on?
+        boolean on = ((Switch) view).isChecked();
+
+        if (on) {
+            Log.d("Gui", "On");
+            stranger.setTextColor(Color.BLACK);
+            Cache.CurrentUser.Available = true;
+            new UpdatePerson().execute(Cache.CurrentUser);
+
+
+        } else {
+            Log.d("Gui", "Off");
+            stranger.setTextColor(Color.GRAY);
+            Cache.CurrentUser.Available = false;
+            new UpdatePerson().execute(Cache.CurrentUser);
+
+        }
+    }
+    private class UpdatePerson extends AsyncTask<Person, Void, String>
+    {
+
+        @Override
+        protected String doInBackground(Person... params) {
+            Log.d("gui", "para aval" + params[0].Available);
+            Log.d("gui", "Person object" + params[0].Name + ", "+ params[0].Id + ", "+ params[0].BirthDay );
+           String re = rest.UpdatePerson(params[0]);
+            Log.d("gui", re);
+            return re;
+        }
+
+        protected void onPostExecute(String result) {
+            Log.d("giu", "Downloaded " + result + " bytes");
+        }
+
     }
 
 }
