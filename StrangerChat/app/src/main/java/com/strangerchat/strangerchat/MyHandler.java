@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
+
 import com.microsoft.windowsazure.notifications.NotificationsHandler;
 
 /**
@@ -38,6 +40,16 @@ public class MyHandler extends NotificationsHandler{
         mNotificationManager = (NotificationManager)
                 ctx.getSystemService(Context.NOTIFICATION_SERVICE);
 
+        // todo if chat message update chatroom
+
+        if (msg.contains("Message from"))
+        {
+            // send broadcast to update chat
+            sendBroadcast();
+
+        }
+
+
         PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0,
                 new Intent(ctx, MainActivity.class), 0);
 
@@ -55,4 +67,12 @@ public class MyHandler extends NotificationsHandler{
         mBuilder.setContentIntent(contentIntent);
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
     }
-}
+
+    private void sendBroadcast() {
+
+
+        Intent BroadcastIntent = new Intent ("Msg");
+        LocalBroadcastManager.getInstance(ctx).sendBroadcast(BroadcastIntent);
+
+        }
+    }
