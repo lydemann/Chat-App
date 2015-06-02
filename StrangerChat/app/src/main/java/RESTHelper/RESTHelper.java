@@ -195,7 +195,7 @@ public class RESTHelper  {
     // get person
 
     // gets  person /////////////////////////////////////////////////////////////////////////////////////////////
-    public Person GetPerson(String id)
+    public String GetPerson(String id)
     {
 
         URL requestUrl;
@@ -254,13 +254,14 @@ public class RESTHelper  {
         }
         if (response == null) {
             Log.d("rest", "Could not find requested person");
-            return new Person("Person not found", "Error","Error",new Date(0000,00,00), "Error", 10.00,10.00 );
+            //return new Person("Person not found", "Error","Error",new Date(0000,00,00), "Error", 10.00,10.00 );
+            return "Error";
         }
 
-        Person per = gson.fromJson(result,Person.class);
+        //Person per = gson.fromJson(result,Person.class);
 
 
-        return per;
+        return result;
     }
 
 

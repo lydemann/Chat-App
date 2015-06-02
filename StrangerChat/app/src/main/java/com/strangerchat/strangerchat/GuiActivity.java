@@ -55,7 +55,7 @@ public class GuiActivity extends FragmentActivity implements OnItemRecycleViewCl
 
         // get a persons chatrooms
 
-        //person = getPersonChatrooms();
+        getPersonChatrooms();
 
         Gson gson = new Gson();
         JSONObject jsonObj = null;
@@ -166,16 +166,18 @@ public class GuiActivity extends FragmentActivity implements OnItemRecycleViewCl
                 try {
                     //get a persons chatrooms
 
+                    String result = rest.GetPerson("Person0");
 
-
-                    person = rest.GetPerson("Person0");
-
+                    Gson gson = new Gson();
+                    person = gson.fromJson(result, Person.class);
                     Log.d("dbperson", person.name);
+
 
                 } catch (Exception e) {
 
                 }
                 return person;
+
             }
         }.execute(null, null, null);
         return person;
