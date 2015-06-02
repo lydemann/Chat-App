@@ -174,8 +174,6 @@ public class RESTHelper {
     }
 
     // get person
-
-    // Finds a random available person
     public Person GetPerson(String id)
     {
         URL requestUrl;
@@ -211,7 +209,7 @@ public class RESTHelper {
 
 
 
-    // Finds a random available person
+    // insert new chatmsg in db
     public String InsertChat(Chat chat)
     {
         URL requestUrl = null;
@@ -255,5 +253,7 @@ public class RESTHelper {
 
 
 
+    // get all chatrooms for a person
 
-        }
+
+ }
