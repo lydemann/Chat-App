@@ -25,7 +25,7 @@
             style="?android:attr/textAppearanceLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
+            android:textColor="@color/Gray"
             android:text="Chat with strangers"
             />
 
@@ -41,6 +41,18 @@
 
             />
 
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onToggleClicked"
+            android:id="@+id/switch1"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:width="70dp"
+
+            />
+
 
     </RelativeLayout>
 
@@ -51,7 +63,9 @@
         android:layout_height="83dp"
         android:layout_below="@+id/StrangerLayout"
         android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+       android:layout_alignParentLeft="true"
+        >
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/idRecyclerView"

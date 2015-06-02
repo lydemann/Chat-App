@@ -48,7 +48,7 @@ import Cache.Cache;
 
 
 public class MainFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
+
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -166,6 +166,19 @@ public class MainFragment extends Fragment {
 
         mCallbackManager = CallbackManager.Factory.create();
 
+        //check login
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        /*
+        if (accessToken == null) {
+            Log.d("tag", ">>>" + "Signed Out");
+        } else {
+            Log.d("tag", ">>>" + "Signed In");
+            Intent intent = new Intent(getActivity(), GuiActivity.class);
+            ((MainActivity)getActivity()).startActivity(intent);
+
+            ((MainActivity)getActivity()).finish();
+        }
+        */
 
         setupTrackers();
 
@@ -174,6 +187,10 @@ public class MainFragment extends Fragment {
         profileTracker.startTracking();
 
     }
+
+
+
+
 
     private void setupTrackers() {
         accessTokenTracker = new AccessTokenTracker() { // for tracking accesstoken changes
@@ -209,8 +226,6 @@ public class MainFragment extends Fragment {
 
         mTextDetails = (TextView) view.findViewById(R.id.text_details);
 
-        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("user_birthday"));
-        LoginManager.getInstance().registerCallback(mCallbackManager, mCallBack);
 
         LoginButton loginButton = (LoginButton) view.findViewById(R.id.login_button);
         loginButton.setFragment(this);

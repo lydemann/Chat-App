@@ -11,10 +11,14 @@ import Models.Person;
  */
 public class Cache {
 
-    public static Person CurrentUser = new Person("0","Christian","Male", new Date(1992,10,24), "url",10.00,10.00);
+    public static Person CurrentUser = new Person("Person0","Christian","Male", new Date(1992,10,24), "url",10.00,10.00);
 
     public static List<Person> CurrentGroupList;
 
     public static List<Chat> ChatList;
 
+    public static int minAge = 15;
+    public static int maxAge = 99;
+    public static String desiredSex = "male";
+    public static double radius = 50.00;
 }
