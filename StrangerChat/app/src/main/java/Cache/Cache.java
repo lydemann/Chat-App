@@ -17,4 +17,8 @@ public class Cache {
 
     public static List<Chat> ChatList;
 
+    public static int minAge = 15;
+    public static int maxAge = 99;
+    public static String desiredSex = "male";
+    public static double radius = 50.00;
 }

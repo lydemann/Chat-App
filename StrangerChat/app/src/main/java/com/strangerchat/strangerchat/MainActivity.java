@@ -1,27 +1,20 @@
 package com.strangerchat.strangerchat;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-
-
-import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-
-import com.facebook.FacebookSdk;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
-import android.content.pm.Signature;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Base64;
 import android.util.Log;
+
+import com.facebook.FacebookSdk;
+import com.facebook.login.widget.LoginButton;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -52,7 +45,8 @@ public class MainActivity extends ActionBarActivity {
 
     public void printKeyHash() {
         try {
-            PackageInfo info = getPackageManager().getPackageInfo("com.strangerchat.strangerchat", PackageManager.GET_SIGNATURES);
+            PackageInfo info = getPackageManager().getPackageInfo("com.strangerchat.strangerchat",
+                    PackageManager.GET_SIGNATURES);
             for (Signature signature : info.signatures) {
                 MessageDigest md = MessageDigest.getInstance("SHA");
                 md.update(signature.toByteArray());
