@@ -1,5 +1,6 @@
 package Models;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -9,24 +10,24 @@ public class Person {
 
     public Person(String id, String name, String sex, Date birthDay, String picUrl, double latitude, double longitude)
     {
-        this.Id = id;
-        this.Name = name;
-        this.BirthDay = birthDay;
-        this.PicUrl = picUrl;
-        this.Latitude = latitude;
-        this.Longitude = longitude;
+        this.id = id;
+        this.name = name;
+        this.birthDay = birthDay;
+        this.picUrl = picUrl;
+        this.latitude = latitude;
+        this.longitude = longitude;
 
     }
 
-    public String Id;
-    public String Name;
-    public String Sex;
-    public Date BirthDay;
-    public int Age;
-    public boolean Available;
-    public String PicUrl;
-    public double Longitude;
-    public double Latitude;
+    public String id;
+    public String name;
+    public String sex;
+    public Date birthDay;
+    public int age;
+    public boolean available;
+    public String picUrl;
+    public double longitude;
+    public double latitude;
 
 
 

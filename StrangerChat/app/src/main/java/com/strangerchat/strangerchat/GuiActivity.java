@@ -18,10 +18,15 @@ import android.widget.Toast;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.gson.Gson;
+import com.google.gson.JsonDeserializer;
 import com.microsoft.windowsazure.messaging.NotificationHub;
 import com.microsoft.windowsazure.notifications.NotificationsManager;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import Cache.Cache;
@@ -35,7 +40,7 @@ public class GuiActivity extends FragmentActivity implements OnItemRecycleViewCl
 
     RecyclerView mRecyclerView;
     TextView stranger;
-    private List<Data> mData = new ArrayList<>();
+    private List<ChatRoom> chatRoomList = new ArrayList<>();
     RESTHelper rest = new RESTHelper();
     Switch onOff;
 
@@ -50,15 +55,39 @@ public class GuiActivity extends FragmentActivity implements OnItemRecycleViewCl
 
         // get a persons chatrooms
 
-        //getPersonChatrooms();
+        //person = getPersonChatrooms();
 
         Gson gson = new Gson();
+        JSONObject jsonObj = null;
 
 
 
+            String str = "{\"id\":1,\"name\":\"The chatroom name\"}";
 
-        //List<ChatRoom> chatRoomList = rest.getChatRoomsOfPerson(Cache.CurrentUser.Id);
-          mData.add(new Data("Mor", "Yo, pikfjs, hva sker der for dig"));
+
+        String perStr = "{\n" +
+                "    \"$id\": \"1\",\n" +
+                "    \"id\": \"person0\",\n" +
+                "    \"name\": \"Christian\",\n" +
+                "    \"sex\": \"Male\",\n" +
+                "    \"birthDay\": \"1992-10-24T00:00:00Z\",\n" +
+                "    \"age\": 22,\n" +
+                "    \"available\": true,\n" +
+                "    \"picUrl\": \"dada\",\n" +
+                "    \"longitude\": 6.1,\n" +
+                "    \"latitude\": 7.1\n" +
+                "}";
+
+
+        person = gson.fromJson(perStr,Person.class);
+
+
+        ChatRoom chatRoom;
+
+        chatRoom = gson.fromJson(str,ChatRoom.class);
+
+        //List<ChatRoom> chatRoomList = rest.getChatRoomsOfPerson(Cache.CurrentUser.id);
+        chatRoomList.add(chatRoom);
 
 
 
@@ -80,7 +109,7 @@ public class GuiActivity extends FragmentActivity implements OnItemRecycleViewCl
         //          mRecyclerView.setLayoutManager(mGridLayoutManager);
 
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setAdapter(new RecyclerAdapter(mData, this));
+        mRecyclerView.setAdapter(new RecyclerAdapter(chatRoomList, this));
 
 
         //"Knappen" til stranger chat
@@ -92,7 +121,7 @@ public class GuiActivity extends FragmentActivity implements OnItemRecycleViewCl
                 Log.d("Gui", "On");
                 onOff.setChecked(true);
                 stranger.setTextColor(Color.BLACK);
-                Cache.CurrentUser.Available = true;
+                Cache.CurrentUser.available = true;
                 new UpdatePerson().execute(Cache.CurrentUser);
                 Intent i = new Intent(getBaseContext(), MessageActivity.class);
                 startActivity(i);
@@ -117,8 +146,8 @@ public class GuiActivity extends FragmentActivity implements OnItemRecycleViewCl
             protected Object doInBackground(Object... params) {
                 try {
                     String regid = gcm.register(Utilities.SENDER_ID);
-                    hub.register(regid, "Person"+Cache.CurrentUser.Id); // default id is 0
-                    Log.d("RegDevice","Person"+Cache.CurrentUser.Id);
+                    hub.register(regid, "Person"+Cache.CurrentUser.id); // default id is 0
+                    Log.d("RegDevice","Person"+Cache.CurrentUser.id);
 
                 } catch (Exception e) {
                     DialogNotify("Exception",e.getMessage());
@@ -130,7 +159,7 @@ public class GuiActivity extends FragmentActivity implements OnItemRecycleViewCl
     }
 
     @SuppressWarnings("unchecked")
-    private void getPersonChatrooms() {
+    private Person getPersonChatrooms() {
         new AsyncTask() {
             @Override
             protected Object doInBackground(Object... params) {
@@ -141,14 +170,15 @@ public class GuiActivity extends FragmentActivity implements OnItemRecycleViewCl
 
                     person = rest.GetPerson("Person0");
 
-                    Log.d("dbperson", person.Name);
+                    Log.d("dbperson", person.name);
 
                 } catch (Exception e) {
 
                 }
-                return null;
+                return person;
             }
         }.execute(null, null, null);
+        return person;
     }
 
 
@@ -196,14 +226,14 @@ public class GuiActivity extends FragmentActivity implements OnItemRecycleViewCl
         if (on) {
             Log.d("Gui", "On");
             stranger.setTextColor(Color.BLACK);
-            Cache.CurrentUser.Available = true;
+            Cache.CurrentUser.available = true;
             new UpdatePerson().execute(Cache.CurrentUser);
 
 
         } else {
             Log.d("Gui", "Off");
             stranger.setTextColor(Color.GRAY);
-            Cache.CurrentUser.Available = false;
+            Cache.CurrentUser.available = false;
             new UpdatePerson().execute(Cache.CurrentUser);
 
         }
@@ -213,8 +243,8 @@ public class GuiActivity extends FragmentActivity implements OnItemRecycleViewCl
 
         @Override
         protected String doInBackground(Person... params) {
-            Log.d("gui", "para aval" + params[0].Available);
-            Log.d("gui", "Person object" + params[0].Name + ", "+ params[0].Id + ", "+ params[0].BirthDay );
+            Log.d("gui", "para aval" + params[0].available);
+            Log.d("gui", "Person object" + params[0].name + ", "+ params[0].id + ", "+ params[0].birthDay );
            String re = rest.UpdatePerson(params[0]);
             Log.d("gui", re);
             return re;

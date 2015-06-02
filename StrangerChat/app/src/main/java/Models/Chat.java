@@ -6,10 +6,10 @@ import java.util.Date;
  * Created by Christian on 30-05-2015.
  */
 public class Chat {
-    public int Id;
+    public int id;
 
-    public String Message;
+    public String message;
 
-    public Date Timestamp;
+    public Date timestamp;
 
 }

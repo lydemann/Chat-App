@@ -74,8 +74,8 @@ public class MainFragment extends Fragment {
             String name = profile.getName();
 
 
-            Cache.CurrentUser.Id = userId;
-            Cache.CurrentUser.Name = name;
+            Cache.CurrentUser.id = userId;
+            Cache.CurrentUser.name = name;
 
             String profilePic = profile.getProfilePictureUri(500, 500).toString();
             GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {

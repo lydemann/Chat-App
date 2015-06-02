@@ -182,8 +182,8 @@ public class MessageActivity extends ActionBarActivity implements GoogleApiClien
         if (mLastLocation != null) {
             Log.d(tag, "lat " + mLastLocation.getLatitude());
             Log.d(tag, "lat " + mLastLocation.getLongitude());
-            Cache.CurrentUser.Latitude = mLastLocation.getLatitude();
-            Cache.CurrentUser.Longitude = mLastLocation.getLongitude();
+            Cache.CurrentUser.latitude = mLastLocation.getLatitude();
+            Cache.CurrentUser.longitude = mLastLocation.getLongitude();
 
             new FindStranger().execute(Cache.CurrentUser, Cache.radius, Cache.desiredSex, Cache.minAge, Cache.maxAge);
 
@@ -208,10 +208,10 @@ public class MessageActivity extends ActionBarActivity implements GoogleApiClien
 
         @Override
         protected Person doInBackground(Object... params) {
-            //Søger efter stragners
+            //search efter stragners
             Person re = rest.FindStranger((Person) params[0], (double) params[1], (String) params[2], (int) params[3], (int) params[4]);
-            Log.d(tag, re.Name);
-            StrangerId = re.Id;
+            Log.d(tag, re.name);
+            StrangerId = re.id;
             return re;
         }
 

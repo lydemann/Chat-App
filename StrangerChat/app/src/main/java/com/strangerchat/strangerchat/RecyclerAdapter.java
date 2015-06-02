@@ -10,15 +10,17 @@ package com.strangerchat.strangerchat;
         import java.util.Collections;
         import java.util.List;
 
+        import Models.ChatRoom;
+
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 
-    private List<Data> mData = Collections.emptyList();
+    private List<ChatRoom> mData = Collections.emptyList();
 
     OnItemRecycleViewClickListener mOnItemRecycleViewClickListener;
 
 
-    public RecyclerAdapter(List<Data> myData, OnItemRecycleViewClickListener mOnItemRecycleViewClickListener) {
+    public RecyclerAdapter(List<ChatRoom> myData, OnItemRecycleViewClickListener mOnItemRecycleViewClickListener) {
         mData = myData;
         this.mOnItemRecycleViewClickListener = mOnItemRecycleViewClickListener;
     }
@@ -41,7 +43,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder view, int position) {
         view.mTextView.setText( mData.get(position).name);
-        view.message.setText( mData.get(position).message);
+        view.message.setText( mData.get(position).name);
         view.itemView.setTag(position);
         view.itemView.setOnClickListener(new OnClickListener() {
             @Override

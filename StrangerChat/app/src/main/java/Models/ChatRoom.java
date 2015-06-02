@@ -5,6 +5,7 @@ package Models;
  */
 public class ChatRoom {
 
-    public int Id;
+    public int id;
+    public String name;
 
 }
