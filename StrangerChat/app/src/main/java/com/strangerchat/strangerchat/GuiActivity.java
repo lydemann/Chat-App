@@ -1,12 +1,12 @@
 package com.strangerchat.strangerchat;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -24,18 +24,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Cache.Cache;
-import Models.ChatRoom;
 import Models.Person;
 import RESTHelper.RESTHelper;
 import Utility.Utilities;
 
 
-public class GuiActivity extends Activity implements OnItemRecycleViewClickListener {
+public class GuiActivity extends FragmentActivity implements OnItemRecycleViewClickListener {
 
     RecyclerView mRecyclerView;
     TextView stranger;
     private List<Data> mData = new ArrayList<>();
     RESTHelper rest = new RESTHelper();
+    Switch onOff;
 
     public static GoogleCloudMessaging gcm;
     public static NotificationHub hub;
@@ -75,6 +75,13 @@ public class GuiActivity extends Activity implements OnItemRecycleViewClickListe
         StrangerLayout.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
+                //Saetter personen til online
+                onOff = (Switch) findViewById(R.id.switch1);
+                Log.d("Gui", "On");
+                onOff.setChecked(true);
+                stranger.setTextColor(Color.BLACK);
+                Cache.CurrentUser.Available = true;
+                new UpdatePerson().execute(Cache.CurrentUser);
                 Intent i = new Intent(getBaseContext(), MessageActivity.class);
                 startActivity(i);
             }

@@ -1,5 +1,7 @@
 package RESTHelper;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 
 import java.io.DataOutputStream;
@@ -10,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.PasswordAuthentication;
 import java.net.URL;
+import java.util.Date;
 
 import Models.Chat;
 import Models.Person;
@@ -17,7 +20,7 @@ import Models.Person;
 /**
  * Created by Christian on 30-05-2015.
  */
-public class RESTHelper {
+public class RESTHelper  {
 
     public RESTHelper()
     {
@@ -83,6 +86,11 @@ public class RESTHelper {
 
                     e.printStackTrace();
                 }
+
+        if (response == null) {
+            Log.d("rest", "Could not find any persons");
+            return new Person("Error", "Error","Error",new Date(1992,10,24), "Error", 10.00,10.00 );
+        }
         // deserialize to person object
                 return gson.fromJson(response.toString(),Person.class);
             }
@@ -132,8 +140,9 @@ public class RESTHelper {
 
 
     // Finds a random available person
-    public String UpdatePerson(Person person)
+    public String UpdatePerson (Person person)
     {
+
         URL requestUrl;
         HttpURLConnection con = null;
         Gson gson = null;
@@ -159,8 +168,6 @@ public class RESTHelper {
 
             response = con.getInputStream();
 
-
-
         } catch(
                 IOException e
                 )
@@ -174,6 +181,8 @@ public class RESTHelper {
     }
 
     // get person
+
+    // Finds a random available person
     public Person GetPerson(String id)
     {
         URL requestUrl;
@@ -203,13 +212,16 @@ public class RESTHelper {
             e.printStackTrace();
 
         }
+        if (response == null) {
+            Log.d("rest", "Could not find requested person");
+            return new Person("Person not found", "Error","Error",new Date(0000,00,00), "Error", 10.00,10.00 );
+        }
 
         return gson.fromJson(response.toString(),Person.class);
     }
 
 
-
-    // insert new chatmsg in db
+    // Finds a random available person
     public String InsertChat(Chat chat)
     {
         URL requestUrl = null;
@@ -253,7 +265,9 @@ public class RESTHelper {
 
 
 
-    // get all chatrooms for a person
+
+        }
 
 
- }
+
+
