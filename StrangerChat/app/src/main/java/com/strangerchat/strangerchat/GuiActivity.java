@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.gson.Gson;
 import com.microsoft.windowsazure.messaging.NotificationHub;
 import com.microsoft.windowsazure.notifications.NotificationsManager;
 
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Cache.Cache;
+import Models.ChatRoom;
 import Models.Person;
 import RESTHelper.RESTHelper;
 import Utility.Utilities;
@@ -40,6 +42,7 @@ public class GuiActivity extends FragmentActivity implements OnItemRecycleViewCl
     public static GoogleCloudMessaging gcm;
     public static NotificationHub hub;
 
+    Person person = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +50,18 @@ public class GuiActivity extends FragmentActivity implements OnItemRecycleViewCl
 
         // get a persons chatrooms
 
-        getPersonChatrooms();
+        //getPersonChatrooms();
 
+        Gson gson = new Gson();
+
+
+
+
+        //List<ChatRoom> chatRoomList = rest.getChatRoomsOfPerson(Cache.CurrentUser.Id);
           mData.add(new Data("Mor", "Yo, pikfjs, hva sker der for dig"));
+
+
+
 
         setContentView(R.layout.activity_main2);
 
@@ -117,7 +129,7 @@ public class GuiActivity extends FragmentActivity implements OnItemRecycleViewCl
         }.execute(null, null, null);
     }
 
-
+    @SuppressWarnings("unchecked")
     private void getPersonChatrooms() {
         new AsyncTask() {
             @Override
@@ -127,6 +139,9 @@ public class GuiActivity extends FragmentActivity implements OnItemRecycleViewCl
 
 
 
+                    person = rest.GetPerson("Person0");
+
+                    Log.d("dbperson", person.Name);
 
                 } catch (Exception e) {
 

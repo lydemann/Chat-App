@@ -22,6 +22,7 @@ public class Person {
     public String Name;
     public String Sex;
     public Date BirthDay;
+    public int Age;
     public boolean Available;
     public String PicUrl;
     public double Longitude;
