@@ -19,8 +19,7 @@
 
     <!-- Permission to vibrate -->
     <uses-permission android:name="android.permission.VIBRATE" />
-
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -39,7 +38,6 @@
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -68,19 +66,10 @@
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-
                 <category android:name="com.strangerchat.strangerchat" />
             </intent-filter>
         </receiver>
 
-        <activity
-            android:name=".MessageSettingsActivity"
-            android:label="@string/title_activity_message_settings"
-            android:parentActivityName=".MessageActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.strangerchat.strangerchat.MessageActivity" />
-        </activity>
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
@@ -89,6 +78,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.strangerchat.strangerchat.GuiActivity" />
         </activity>
+
     </application>
 
 </manifest>

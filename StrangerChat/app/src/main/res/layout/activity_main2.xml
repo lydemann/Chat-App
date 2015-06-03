@@ -36,7 +36,7 @@
             android:textColor="@android:color/darker_gray"
             android:layout_gravity="bottom"
             android:layout_below="@id/txt1"
-            android:text="Find a stranger near you and start chatting"
+            android:text="Set your availability"
 
 
             />
@@ -86,7 +86,9 @@
             fab:fab_colorRipple="@color/primary_light"
             android:layout_margin="20dp"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"
+            android:onClick="StartStrangerChat"
+            />
 
 
     </RelativeLayout>

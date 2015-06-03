@@ -1,32 +1,36 @@
 package com.strangerchat.strangerchat;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
-import com.google.gson.JsonDeserializer;
 import com.microsoft.windowsazure.messaging.NotificationHub;
 import com.microsoft.windowsazure.notifications.NotificationsManager;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import Cache.Cache;
@@ -36,13 +40,19 @@ import RESTHelper.RESTHelper;
 import Utility.Utilities;
 
 
-public class GuiActivity extends FragmentActivity implements OnItemRecycleViewClickListener {
+public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewClickListener,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
+    String tag = "Hoved";
     RecyclerView mRecyclerView;
     TextView stranger;
     private List<ChatRoom> chatRoomList = new ArrayList<>();
     RESTHelper rest = new RESTHelper();
     Switch onOff;
+    GoogleApiClient mGoogleApiClient;
+    Location mLastLocation;//brugerens location
+    String StrangerId;
+    ProgressDialog dialog;
 
     public static GoogleCloudMessaging gcm;
     public static NotificationHub hub;
@@ -61,8 +71,7 @@ public class GuiActivity extends FragmentActivity implements OnItemRecycleViewCl
         JSONObject jsonObj = null;
 
 
-
-            String str = "{\"id\":1,\"name\":\"The chatroom name\"}";
+        String str = "{\"id\":1,\"name\":\"The chatroom name\"}";
 
 
         String perStr = "{\n" +
@@ -79,54 +88,30 @@ public class GuiActivity extends FragmentActivity implements OnItemRecycleViewCl
                 "}";
 
 
-        person = gson.fromJson(perStr,Person.class);
+        person = gson.fromJson(perStr, Person.class);
 
 
         ChatRoom chatRoom;
 
-        chatRoom = gson.fromJson(str,ChatRoom.class);
+        chatRoom = gson.fromJson(str, ChatRoom.class);
 
         //List<ChatRoom> chatRoomList = rest.getChatRoomsOfPerson(Cache.CurrentUser.id);
         chatRoomList.add(chatRoom);
-
-
 
 
         setContentView(R.layout.activity_main2);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.idRecyclerView);
         stranger = (TextView) findViewById(R.id.txt1);
-        RelativeLayout StrangerLayout =(RelativeLayout)findViewById(R.id.StrangerLayout);//starnger chatt knappen
+        RelativeLayout StrangerLayout = (RelativeLayout) findViewById(R.id.StrangerLayout);//starnger chatt knappen
 
         LinearLayoutManager mLinearManager = new LinearLayoutManager(this);
 
         mRecyclerView.setLayoutManager(mLinearManager);
-
-        //          StaggeredGridLayoutManager mStaggeredGridLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL);
-        //          mRecyclerView.setLayoutManager(mStaggeredGridLayoutManager);
-        //
-        //          GridLayoutManager mGridLayoutManager = new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
-        //          mRecyclerView.setLayoutManager(mGridLayoutManager);
-
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(new RecyclerAdapter(chatRoomList, this));
 
 
-        //"Knappen" til stranger chat
-        StrangerLayout.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                //Saetter personen til online
-                onOff = (Switch) findViewById(R.id.switch1);
-                Log.d("Gui", "On");
-                onOff.setChecked(true);
-                stranger.setTextColor(Color.BLACK);
-                Cache.CurrentUser.available = true;
-                new UpdatePerson().execute(Cache.CurrentUser);
-                Intent i = new Intent(getBaseContext(), MessageActivity.class);
-                startActivity(i);
-            }
-        });
 
 
         MyHandler.GUIActivity = this;
@@ -136,8 +121,52 @@ public class GuiActivity extends FragmentActivity implements OnItemRecycleViewCl
 
         registerWithNotificationHubs();
 
+        buildGoogleApiClient();//Opretter google api funktionen
+        onOff = (Switch) findViewById(R.id.switch1);//Sætter switchen så den kan aendres
+
+
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //Saetter status ved startup
+        if (Cache.CurrentUser.available) {
+            onOff.setChecked(true);//sææter brugerens online status grafisk
+            stranger.setTextColor(Color.BLACK);
+        }
+        else{
+            onOff.setChecked(false);//sææter brugerens online status grafisk
+            stranger.setTextColor(Color.GRAY);
+
+        }
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_message, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            Intent i = new Intent(getBaseContext(), SettingsActivity.class);
+            startActivity(i);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     @SuppressWarnings("unchecked")
     private void registerWithNotificationHubs() {
@@ -146,11 +175,11 @@ public class GuiActivity extends FragmentActivity implements OnItemRecycleViewCl
             protected Object doInBackground(Object... params) {
                 try {
                     String regid = gcm.register(Utilities.SENDER_ID);
-                    hub.register(regid, "Person"+Cache.CurrentUser.id); // default id is 0
-                    Log.d("RegDevice","Person"+Cache.CurrentUser.id);
+                    hub.register(regid, "Person" + Cache.CurrentUser.id); // default id is 0
+                    Log.d("RegDevice", "Person" + Cache.CurrentUser.id);
 
                 } catch (Exception e) {
-                    DialogNotify("Exception",e.getMessage());
+                    DialogNotify("Exception", e.getMessage());
                     return e;
                 }
                 return null;
@@ -191,8 +220,7 @@ public class GuiActivity extends FragmentActivity implements OnItemRecycleViewCl
      * @param title   Title for the AlertDialog box.
      * @param message The message displayed for the AlertDialog box.
      */
-    public void DialogNotify(final String title,final String message)
-    {
+    public void DialogNotify(final String title, final String message) {
         final AlertDialog.Builder dlg;
         dlg = new AlertDialog.Builder(this);
 
@@ -218,6 +246,8 @@ public class GuiActivity extends FragmentActivity implements OnItemRecycleViewCl
     @Override
     public void onItemClicked(int position, RecyclerAdapter mAdapter) {
         Toast.makeText(this, String.valueOf(position), Toast.LENGTH_LONG).show();
+        //Bruger id skal sendes med her i stedet for positionen
+        startChat(String.valueOf(position));
     }
 
     //Online offline toogle
@@ -240,23 +270,122 @@ public class GuiActivity extends FragmentActivity implements OnItemRecycleViewCl
 
         }
     }
-    private class UpdatePerson extends AsyncTask<Person, Void, String>
-    {
+
+    public void StartStrangerChat(View view){
+
+        dialog = new ProgressDialog(GuiActivity.this);
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialog.setMessage("Finding a stranger...");
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setIndeterminate(true);
+        dialog.show();
+
+        //Saetter personen til online
+        mGoogleApiClient.connect();
+
+        Log.d("Gui", "On");
+        onOff.setChecked(true);
+        stranger.setTextColor(Color.BLACK);
+        Cache.CurrentUser.available = true;
+
+        new FindStranger().execute(Cache.CurrentUser, Cache.radius, Cache.desiredSex, Cache.minAge, Cache.maxAge);
+
+
+
+    }
+
+    //Location pjat
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
+    //finder brugerens placering og gemmer den i cachen
+    @Override
+    public void onConnected(Bundle bundle) {
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        Log.d(tag, "location");
+        if (mLastLocation != null) {
+            Log.d(tag, "lat " + mLastLocation.getLatitude());
+            Log.d(tag, "lat " + mLastLocation.getLongitude());
+            Cache.CurrentUser.latitude = mLastLocation.getLatitude();
+            Cache.CurrentUser.longitude = mLastLocation.getLongitude();
+
+        } else
+            Toast.makeText(this, "Could not get loaction", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        mGoogleApiClient.connect();
+        Toast.makeText(this, "Loaction suspended", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Toast.makeText(this, "Failed to get loaction", Toast.LENGTH_LONG).show();
+    }
+
+    private void startChat(Person person){
+
+        Intent i = new Intent(getBaseContext(), MessageActivity.class);
+        i.putExtra("personId", person.id);
+        startActivity(i);
+    }
+    private void startChat(String personId){
+
+        Intent i = new Intent(getBaseContext(), MessageActivity.class);
+        i.putExtra("personId", personId);
+        startActivity(i);
+    }
+
+    private void setStatus(boolean status){
+
+
+
+    }
+
+
+    private class UpdatePerson extends AsyncTask<Person, Void, String> {
 
         @Override
         protected String doInBackground(Person... params) {
-            Log.d("gui", "para aval" + params[0].available);
-            Log.d("gui", "Person object" + params[0].name + ", "+ params[0].id + ", "+ params[0].birthDay );
-           String re = rest.UpdatePerson(params[0]);
-            Log.d("gui", re);
+            String re = rest.UpdatePerson(params[0]);
+            Log.d(tag, re);
             return re;
         }
 
         protected void onPostExecute(String result) {
-            Log.d("giu", "Downloaded " + result + " bytes");
+            Log.d(tag, result);
         }
 
     }
+
+    private class FindStranger extends AsyncTask<Object, Void, Person> {
+        RESTHelper rest = new RESTHelper();
+
+        @Override
+        protected Person doInBackground(Object... params) {
+            //Soeger efter stragners
+            Person re = rest.FindStranger((Person) params[0], (double) params[1], (String) params[2], (int) params[3], (int) params[4]);
+            Log.d(tag, re.name);
+            StrangerId = re.id;
+            return re;
+        }
+         @Override
+        protected void onPostExecute(Person re) {
+            new UpdatePerson().execute(Cache.CurrentUser);
+             Log.d(tag, "fundet en fremmede: " + re.name);
+             dialog.hide();
+            startChat(re);
+        }
+
+    }
+
 
 }
 
