@@ -25,6 +25,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.microsoft.windowsazure.messaging.NotificationHub;
 import com.microsoft.windowsazure.notifications.NotificationsManager;
 
@@ -122,7 +123,7 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
         registerWithNotificationHubs();
 
         buildGoogleApiClient();//Opretter google api funktionen
-        onOff = (Switch) findViewById(R.id.switch1);//Sætter switchen så den kan aendres
+        onOff = (Switch) findViewById(R.id.switch1);//Sï¿½tter switchen sï¿½ den kan aendres
 
 
     }
@@ -133,11 +134,11 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
         super.onResume();
         //Saetter status ved startup
         if (Cache.CurrentUser.available) {
-            onOff.setChecked(true);//sææter brugerens online status grafisk
+            onOff.setChecked(true);//sï¿½ï¿½ter brugerens online status grafisk
             stranger.setTextColor(Color.BLACK);
         }
         else{
-            onOff.setChecked(false);//sææter brugerens online status grafisk
+            onOff.setChecked(false);//sï¿½ï¿½ter brugerens online status grafisk
             stranger.setTextColor(Color.GRAY);
 
         }
@@ -195,10 +196,10 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
                 try {
                     //get a persons chatrooms
 
-                    String result = rest.GetPerson("Person0");
+                    String result = rest.getChatRoomsOfPerson("Person0");
 
                     Gson gson = new Gson();
-                    person = gson.fromJson(result, Person.class);
+                    chatRoomList = gson.fromJson(result,new TypeToken<List<ChatRoom>>(){}.getType());
                     Log.d("dbperson", person.name);
 
 

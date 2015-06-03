@@ -310,7 +310,7 @@ public class RESTHelper  {
 
     // get person's chatrooms
 
-    public List<ChatRoom> getChatRoomsOfPerson(String personId)
+    public String getChatRoomsOfPerson(String personId)
     {
 
             URL requestUrl;
@@ -345,7 +345,7 @@ public class RESTHelper  {
                 return null;
             }
 
-            return gson.fromJson(response.toString(),new TypeToken<List<ChatRoom>>(){}.getType());
+            return response.toString();
 
     }
 
