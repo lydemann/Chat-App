@@ -10,6 +10,10 @@ public class Chat {
 
     public String message;
 
-    public Date timestamp;
+    //public Date timestamp = new Date();
+
+    public String personId;
+
+    public int chatRoomId;
 
 }

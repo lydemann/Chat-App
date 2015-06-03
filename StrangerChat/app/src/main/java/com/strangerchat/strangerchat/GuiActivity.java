@@ -150,8 +150,8 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
             protected Object doInBackground(Object... params) {
                 try {
                     String regid = gcm.register(Utilities.SENDER_ID);
-                    hub.register(regid, "Person" + Cache.CurrentUser.id); // default id is 0
-                    Log.d("RegDevice", "Person" + Cache.CurrentUser.id);
+                    hub.register(regid, Cache.CurrentUser.id); // default id is Person0
+                    Log.d("RegDevice", Cache.CurrentUser.id);
 
                 } catch (Exception e) {
                     DialogNotify("Exception", e.getMessage());
@@ -163,7 +163,7 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
     }
 
     @SuppressWarnings("unchecked")
-    private Person getPersonChatrooms() {
+    private void getPersonChatrooms() {
         new AsyncTask() {
             @Override
             protected Object doInBackground(Object... params) {
@@ -184,12 +184,15 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
                             synchronized (recyclerAdapter)
                             {
 
+
                                 if(chatRoomList.size() != 0) {
                                     Cache.CurrentChatRoomList.clear();
                                     for(ChatRoom room : chatRoomList) {
                                         Cache.CurrentChatRoomList.add(room);
+
                                         recyclerAdapter.notifyDataSetChanged();
                                     }
+
                                 }
 
                             }
@@ -202,11 +205,11 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
                 } catch (Exception e) {
 
                 }
-                return person;
+                return null;
 
             }
         }.execute(null, null, null);
-        return person;
+
     }
 
 

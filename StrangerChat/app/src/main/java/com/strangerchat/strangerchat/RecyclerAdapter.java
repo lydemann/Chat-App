@@ -10,6 +10,7 @@ package com.strangerchat.strangerchat;
         import java.util.Collections;
         import java.util.List;
 
+        import Cache.Cache;
         import Models.ChatRoom;
 
 
@@ -49,6 +50,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             @Override
             public void onClick(View v) {
                 mOnItemRecycleViewClickListener.onItemClicked(Integer.parseInt(v.getTag().toString()), RecyclerAdapter.this);
+                Cache.CurrentChatRoom = Cache.CurrentChatRoomList.get(Integer.parseInt(v.getTag().toString()));
             }
         });
     }

@@ -28,7 +28,7 @@ public class MyHandler extends NotificationsHandler{
         String nhMessage = bundle.getString("message");
 
         sendNotification(nhMessage);
-        GUIActivity.DialogNotify("Received Notification",nhMessage);
+        //GUIActivity.DialogNotify("Received Notification",nhMessage);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class MyHandler extends NotificationsHandler{
         if (msg.contains("Message from"))
         {
             // send broadcast to update chat
-            sendBroadcast(msg,"Stranger");
+            sendBroadcast(msg,msg.substring(13));
 
         }
 

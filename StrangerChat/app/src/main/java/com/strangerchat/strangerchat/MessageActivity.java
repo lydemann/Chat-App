@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
@@ -22,6 +23,16 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.List;
+
+import Cache.Cache;
+import Models.Chat;
+import Models.ChatRoom;
+import RESTHelper.RESTHelper;
+
 
 public class MessageActivity extends ActionBarActivity  {
     String tag = "MessageActivity";
@@ -31,6 +42,8 @@ public class MessageActivity extends ActionBarActivity  {
     TableLayout tab;
     String StrangerId;
 
+
+    RESTHelper rest = new RESTHelper();
     ProgressBar bar;
 
     @Override
@@ -49,6 +62,14 @@ public class MessageActivity extends ActionBarActivity  {
         tab = (TableLayout) findViewById(R.id.tab);
 
 
+        Chat chat = new Chat();
+        chat.personId = "hdahd";
+        chat.message = "Hello from stranger";
+        chat.chatRoomId = 1;
+        Cache.CurrentChatList.add(chat);
+
+        getChatRoomMessagesAndUpdate();
+
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,15 +79,7 @@ public class MessageActivity extends ActionBarActivity  {
                     Toast.makeText(getApplicationContext(), "Message can't be empty", Toast.LENGTH_SHORT).show();
                 } else {
 
-                    TableRow tr2 = new TableRow(getApplicationContext());
-                    tr2.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-                    TextView textview = new TextView(getApplicationContext());
-                    textview.setTextSize(20);
-                    textview.setTextColor(Color.parseColor("#A901DB"));
-                    textview.setText(Html.fromHtml("<b>You : </b>" + editTextMsg.getText().toString()));
-                    tr2.addView(textview);
-                    tab.addView(tr2);
-                    editTextMsg.setText("");
+                    addChatMsgToView("You", editTextMsg.getText().toString(), "#00FF00");
 
                     send();
                 }
@@ -80,35 +93,97 @@ public class MessageActivity extends ActionBarActivity  {
 
 
 
-
+    @SuppressWarnings("unchecked")
     private void send() {
 
+            new AsyncTask() {
+                @Override
+                protected Object doInBackground(Object... params) {
+                    try {
+                        //get a persons chatrooms
+                        final String result;
 
-        // send message to Web Api
-    }
+                        Chat theChat = new Chat();
+                        theChat.chatRoomId = Cache.CurrentChatRoom.id;
+                        theChat.personId = Cache.CurrentUser.id;
+                        theChat.message = editTextMsg.getText().toString();
+
+
+                        result = rest.InsertChat(theChat);
+
+
+
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                if(result == "Error") {
+                                    Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                                }
+
+                                editTextMsg.setText("");
+                            }
+                        });
+
+
+                    }
+                    catch (Exception e) {
+
+                        Log.d("ex", e.getMessage());
+                    }
+                    return null;
+
+                }
+            }.execute(null, null, null);
+
+        }
 
 
     private BroadcastReceiver onNotice = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            String str = intent.getStringExtra("msg");
-            String str1 = intent.getStringExtra("fromname");
 
 
-            TableRow tr1 = new TableRow(getApplicationContext());
-            tr1.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-            TextView textview = new TextView(getApplicationContext());
-            textview.setTextSize(20);
-            textview.setTextColor(Color.parseColor("#0B0719"));
-            textview.setText(Html.fromHtml("<b>" + str1 + " : </b>" + str));
-            tr1.addView(textview);
+            Log.d("BroadcastReceiver","MsgReceived");
 
-            tab.addView(tr1);
+
+            getChatRoomMessagesAndUpdate();
 
 
         }
     };
+
+
+
+    private void updateChats()
+    {
+        for(Chat chat : Cache.CurrentChatList)
+        {
+            if(chat.personId.equals(Cache.CurrentUser.id)) {
+                addChatMsgToView("You", chat.message, "#00FF00");
+            }
+            else {
+                addChatMsgToView("Stranger", chat.message, "#FF0000");
+            }
+
+        }
+
+    }
+
+    private void addChatMsgToView(String name, String msg, String colorCode)
+    {
+        TableRow tr1 = new TableRow(getApplicationContext());
+        tr1.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+        TextView textview = new TextView(getApplicationContext());
+        textview.setTextSize(20);
+        textview.setTextColor(Color.parseColor(colorCode));
+        textview.setText(Html.fromHtml("<b>" + name + " : </b>" + msg));
+        tr1.addView(textview);
+
+        tab.addView(tr1);
+    }
 
 
 
@@ -138,7 +213,57 @@ public class MessageActivity extends ActionBarActivity  {
 
 
 
+    @SuppressWarnings("unchecked")
+    private void getChatRoomMessagesAndUpdate() {
+        new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object... params) {
+                try {
+                    //get a persons chatrooms
+                    String result;
+                    result = rest.getChatsInChatRoom(Cache.CurrentChatRoom.id);
 
+
+                    Gson gson = new Gson();
+
+
+
+                    Cache.CurrentChatList.clear();
+
+                    Cache.CurrentChatList = gson.fromJson(result,new TypeToken<List<Chat>>(){}.getType());
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            // update mRecycleView
+
+
+
+                                if(Cache.CurrentChatList.size() != 0) {
+
+
+                                    updateChats();
+
+                                }
+
+
+
+                        }
+                    });
+
+
+                }
+                catch (Exception e) {
+
+                    Log.d("ex", e.getMessage());
+                }
+                return null;
+
+            }
+        }.execute(null, null, null);
+
+    }
 
 
 

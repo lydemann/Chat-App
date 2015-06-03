@@ -8,4 +8,8 @@ public class ChatRoom {
     public int id;
     public String name;
 
+    public ChatRoom(int idArg, String nameArg) {
+        id = idArg;
+        name = nameArg;
+    }
 }
