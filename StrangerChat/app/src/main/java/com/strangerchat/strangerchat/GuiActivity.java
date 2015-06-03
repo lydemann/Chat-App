@@ -54,7 +54,7 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
     Location mLastLocation;//brugerens location
     String StrangerId;
     ProgressDialog dialog;
-
+    RecyclerAdapter recyclerAdapter;
     public static GoogleCloudMessaging gcm;
     public static NotificationHub hub;
 
@@ -68,36 +68,8 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
 
         getPersonChatrooms();
 
-        Gson gson = new Gson();
-        JSONObject jsonObj = null;
 
 
-        String str = "{\"id\":1,\"name\":\"The chatroom name\"}";
-
-
-        String perStr = "{\n" +
-                "    \"$id\": \"1\",\n" +
-                "    \"id\": \"person0\",\n" +
-                "    \"name\": \"Christian\",\n" +
-                "    \"sex\": \"Male\",\n" +
-                "    \"birthDay\": \"1992-10-24T00:00:00Z\",\n" +
-                "    \"age\": 22,\n" +
-                "    \"available\": true,\n" +
-                "    \"picUrl\": \"dada\",\n" +
-                "    \"longitude\": 6.1,\n" +
-                "    \"latitude\": 7.1\n" +
-                "}";
-
-
-        person = gson.fromJson(perStr, Person.class);
-
-
-        ChatRoom chatRoom;
-
-        chatRoom = gson.fromJson(str, ChatRoom.class);
-
-        //List<ChatRoom> chatRoomList = rest.getChatRoomsOfPerson(Cache.CurrentUser.id);
-        chatRoomList.add(chatRoom);
 
 
         setContentView(R.layout.activity_main2);
@@ -108,9 +80,11 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
 
         LinearLayoutManager mLinearManager = new LinearLayoutManager(this);
 
+
+        recyclerAdapter = new RecyclerAdapter(Cache.CurrentChatRoomList, this);
         mRecyclerView.setLayoutManager(mLinearManager);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setAdapter(new RecyclerAdapter(chatRoomList, this));
+        mRecyclerView.setAdapter(recyclerAdapter);
 
 
 
@@ -196,11 +170,33 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
                 try {
                     //get a persons chatrooms
 
-                    String result = rest.getChatRoomsOfPerson("Person0");
+                    String result = rest.getChatRoomsOfPerson(Cache.CurrentUser.id);
 
                     Gson gson = new Gson();
                     chatRoomList = gson.fromJson(result,new TypeToken<List<ChatRoom>>(){}.getType());
-                    Log.d("dbperson", person.name);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            // update mRecycleView
+
+                            synchronized (recyclerAdapter)
+                            {
+
+                                if(chatRoomList.size() != 0) {
+                                    Cache.CurrentChatRoomList.clear();
+                                    for(ChatRoom room : chatRoomList) {
+                                        Cache.CurrentChatRoomList.add(room);
+                                        recyclerAdapter.notifyDataSetChanged();
+                                    }
+                                }
+
+                            }
+
+
+                        }
+                    });
 
 
                 } catch (Exception e) {

@@ -27,7 +27,7 @@ public class MainActivity extends ActionBarActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_main);
 
-        printKeyHash();
+        //printKeyHash();
 
 
         mFragmentManager = getSupportFragmentManager();

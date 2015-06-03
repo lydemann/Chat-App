@@ -199,8 +199,6 @@ public class RESTHelper  {
     {
 
         URL requestUrl;
-        HttpURLConnection con = null;
-        Gson gson = null;
         String credentials = "admin" + ":" + "LBWtXpISapjpfHURBHzuspsLBjmVqP80";
         String base64EncodedCredentials = Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
         String result = "";
@@ -218,10 +216,7 @@ public class RESTHelper  {
 
             HttpClient httpclient = new DefaultHttpClient();
 
-
-
             response = httpclient.execute(request);
-
 
             BufferedReader rd = new BufferedReader(
                     new InputStreamReader(response.getEntity().getContent()));
@@ -313,22 +308,42 @@ public class RESTHelper  {
     public String getChatRoomsOfPerson(String personId)
     {
 
-            URL requestUrl;
-            HttpURLConnection con = null;
-            Gson gson = null;
-            InputStream response = null;
+        URL requestUrl;
+        String credentials = "admin" + ":" + "LBWtXpISapjpfHURBHzuspsLBjmVqP80";
+        String base64EncodedCredentials = Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
+        String result = "";
+        HttpResponse response = null;
 
             try {
                 requestUrl = new URL("http://strangerchat.azure-mobile.net/GetPersonsChatrooms?personId="+personId);
 
-                con = (HttpURLConnection) requestUrl.openConnection();
-                con.setRequestMethod("GET");
-                con.setDoOutput(true);
-                con.connect();
+                HttpUriRequest request = new HttpGet(requestUrl.toString());
 
-                int responseCode = con.getResponseCode();
+                request.addHeader("Authorization", "Basic " + base64EncodedCredentials);
 
-                response = con.getInputStream();
+
+                HttpClient httpclient = new DefaultHttpClient();
+
+                response = httpclient.execute(request);
+
+                BufferedReader rd = new BufferedReader(
+                        new InputStreamReader(response.getEntity().getContent()));
+
+
+                result = null;
+                String line = "";
+                while ((line = rd.readLine()) != null) {
+                    boolean firsttime = true;
+
+                    if(firsttime) {
+                        result = line;
+                        firsttime = false;
+                    }
+                    else
+                        result += line;
+
+                }
+
 
                 // deserialize to person object
 
@@ -340,13 +355,16 @@ public class RESTHelper  {
                 e.printStackTrace();
 
             }
-            if (response == null) {
-                Log.d("rest", "Could not any chatrooms for userId:" + personId);
-                return null;
-            }
+        if (response == null) {
+            Log.d("rest", "Could not find any persons");
+            //return new Person("Person not found", "Error","Error",new Date(0000,00,00), "Error", 10.00,10.00 );
+            return "Error";
+        }
 
-            return response.toString();
+        //Person per = gson.fromJson(result,Person.class);
 
+
+        return result;
     }
 
 
