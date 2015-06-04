@@ -181,13 +181,12 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
 
                             // update mRecycleView
 
-                            synchronized (recyclerAdapter)
-                            {
+                            synchronized (recyclerAdapter) {
 
 
-                                if(chatRoomList.size() != 0) {
+                                if (chatRoomList.size() != 0) {
                                     Cache.CurrentChatRoomList.clear();
-                                    for(ChatRoom room : chatRoomList) {
+                                    for (ChatRoom room : chatRoomList) {
                                         Cache.CurrentChatRoomList.add(room);
 
                                         recyclerAdapter.notifyDataSetChanged();
@@ -249,27 +248,64 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
         //Bruger id skal sendes med her i stedet for positionen
         startChat(String.valueOf(position));
     }
-
+    boolean on = false;
     //Online offline toogle
     public void onToggleClicked(View view) {
         // Is the toggle on?
-        boolean on = ((Switch) view).isChecked();
+        on = ((Switch) view).isChecked();
 
         if (on) {
             Log.d("Gui", "On");
             stranger.setTextColor(Color.BLACK);
             Cache.CurrentUser.available = true;
-            new UpdatePerson().execute(Cache.CurrentUser);
+            updatePerson();
 
 
         } else {
             Log.d("Gui", "Off");
             stranger.setTextColor(Color.GRAY);
             Cache.CurrentUser.available = false;
-            new UpdatePerson().execute(Cache.CurrentUser);
+
+            updatePerson();
 
         }
     }
+
+    @SuppressWarnings("unchecked")
+    private void updatePerson() {
+        new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object... params) {
+                try {
+                    //get a persons chatrooms
+
+                    final String result = rest.ChangeAvailabilityOfPerson(on);
+
+
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+
+                            Toast.makeText(getApplicationContext(),result,Toast.LENGTH_SHORT).show();
+
+
+
+                        }
+                    });
+
+
+                } catch (Exception e) {
+
+                }
+                return null;
+
+            }
+        }.execute(null, null, null);
+
+    }
+
 
     public void StartStrangerChat(View view){
 
@@ -288,11 +324,51 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
         stranger.setTextColor(Color.BLACK);
         Cache.CurrentUser.available = true;
 
-        new FindStranger().execute(Cache.CurrentUser, Cache.radius, Cache.desiredSex, Cache.minAge, Cache.maxAge);
+        findStranger();
 
 
 
     }
+
+
+    @SuppressWarnings("unchecked")
+    private void findStranger() {
+        new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object... params) {
+                try {
+                    //get a persons chatrooms
+
+                    final String result = rest.FindStranger(Cache.CurrentUser, Cache.radius, Cache.desiredSex = "Both", Cache.minAge = 0, Cache.maxAge = 26);
+
+
+                    Gson gson = new Gson();
+                    Cache.CurrentStranger = gson.fromJson(result,Person.class);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+
+                            Toast.makeText(getApplicationContext(),result,Toast.LENGTH_SHORT).show();
+
+
+
+                        }
+                    });
+
+
+                } catch (Exception e) {
+
+                }
+                return null;
+
+            }
+        }.execute(null, null, null);
+
+    }
+
+
 
     //Location pjat
     protected synchronized void buildGoogleApiClient() {
@@ -350,41 +426,8 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
     }
 
 
-    private class UpdatePerson extends AsyncTask<Person, Void, String> {
 
-        @Override
-        protected String doInBackground(Person... params) {
-            String re = rest.UpdatePerson(params[0]);
-            Log.d(tag, re);
-            return re;
-        }
 
-        protected void onPostExecute(String result) {
-            Log.d(tag, result);
-        }
-
-    }
-
-    private class FindStranger extends AsyncTask<Object, Void, Person> {
-        RESTHelper rest = new RESTHelper();
-
-        @Override
-        protected Person doInBackground(Object... params) {
-            //Soeger efter stragners
-            Person re = rest.FindStranger((Person) params[0], (double) params[1], (String) params[2], (int) params[3], (int) params[4]);
-            Log.d(tag, re.name);
-            StrangerId = re.id;
-            return re;
-        }
-         @Override
-        protected void onPostExecute(Person re) {
-            new UpdatePerson().execute(Cache.CurrentUser);
-             Log.d(tag, "fundet en fremmede: " + re.name);
-             dialog.hide();
-            startChat(re);
-        }
-
-    }
 
 
 }

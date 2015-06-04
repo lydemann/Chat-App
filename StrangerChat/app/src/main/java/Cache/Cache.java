@@ -23,6 +23,8 @@ public class Cache {
 
     public static ChatRoom CurrentChatRoom = new ChatRoom(1,"Chatroom");
 
+    public static Person CurrentStranger = null;
+
     public static int minAge = 15;
     public static int maxAge = 99;
     public static String desiredSex = "Both";

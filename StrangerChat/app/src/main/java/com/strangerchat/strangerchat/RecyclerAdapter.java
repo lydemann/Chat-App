@@ -28,12 +28,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView mTextView;
         public ImageView mImageView;
-        public TextView message;
         public ViewHolder(View v) {
             super(v);
             mTextView = (TextView) v.findViewById(R.id.txt1);
             mImageView = (ImageView) v.findViewById(R.id.pic);
-            message = (TextView) itemView.findViewById(R.id.message);
         }
     }
 
@@ -44,7 +42,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder view, int position) {
         view.mTextView.setText( mData.get(position).name);
-        view.message.setText( mData.get(position).name);
         view.itemView.setTag(position);
         view.itemView.setOnClickListener(new OnClickListener() {
             @Override
