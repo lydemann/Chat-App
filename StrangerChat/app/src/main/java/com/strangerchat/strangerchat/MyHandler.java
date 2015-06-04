@@ -45,7 +45,7 @@ public class MyHandler extends NotificationsHandler{
         if (msg.contains("Message from"))
         {
             // send broadcast to update chat
-            sendBroadcast(msg,msg.substring(13));
+            sendBroadcast("Msg",msg,msg.substring(13));
 
         }
 
@@ -68,10 +68,10 @@ public class MyHandler extends NotificationsHandler{
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
     }
 
-    private void sendBroadcast(String msg, String fromName) {
+    private void sendBroadcast(String intentTag, String msg, String fromName) {
 
 
-        Intent broadcastIntent = new Intent ("Msg");
+        Intent broadcastIntent = new Intent (intentTag);
         broadcastIntent.putExtra("msg", msg);
         broadcastIntent.putExtra("fromname", fromName);
 

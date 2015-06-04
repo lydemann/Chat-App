@@ -11,6 +11,7 @@ public class Person {
     public Person(String id, String name, String sex, Date birthDay, String picUrl, double latitude, double longitude)
     {
         this.id = id;
+        this.sex = sex;
         this.name = name;
         this.birthDay = birthDay;
         this.picUrl = picUrl;

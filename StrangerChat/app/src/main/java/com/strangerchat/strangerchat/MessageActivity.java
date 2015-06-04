@@ -79,7 +79,7 @@ public class MessageActivity extends ActionBarActivity  {
                     Toast.makeText(getApplicationContext(), "Message can't be empty", Toast.LENGTH_SHORT).show();
                 } else {
 
-                    addChatMsgToView("You", editTextMsg.getText().toString(), "#00FF00");
+                    addChatMsgToView(Cache.CurrentUser.name, editTextMsg.getText().toString(), "#00FF00");
 
                     send();
                 }
@@ -110,9 +110,6 @@ public class MessageActivity extends ActionBarActivity  {
 
 
                         result = rest.InsertChat(theChat);
-
-
-
 
                         runOnUiThread(new Runnable() {
                             @Override
@@ -162,10 +159,10 @@ public class MessageActivity extends ActionBarActivity  {
         for(Chat chat : Cache.CurrentChatList)
         {
             if(chat.personId.equals(Cache.CurrentUser.id)) {
-                addChatMsgToView("You", chat.message, "#00FF00");
+                addChatMsgToView(chat.senderName, chat.message, "#088A08");
             }
             else {
-                addChatMsgToView("Stranger", chat.message, "#FF0000");
+                addChatMsgToView(chat.senderName, chat.message, "#FF0000");
             }
 
         }
@@ -223,10 +220,7 @@ public class MessageActivity extends ActionBarActivity  {
                     String result;
                     result = rest.getChatsInChatRoom(Cache.CurrentChatRoom.id);
 
-
                     Gson gson = new Gson();
-
-
 
                     Cache.CurrentChatList.clear();
 
@@ -238,16 +232,11 @@ public class MessageActivity extends ActionBarActivity  {
 
                             // update mRecycleView
 
-
-
                                 if(Cache.CurrentChatList.size() != 0) {
-
 
                                     updateChats();
 
                                 }
-
-
 
                         }
                     });

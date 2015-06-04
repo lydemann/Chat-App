@@ -13,7 +13,7 @@ import Models.Person;
  */
 public class Cache {
 
-    public static Person CurrentUser = new Person("person0","Christian","Male", new Date(1992,10,24), "url",10.00,10.00);
+    public static Person CurrentUser = new Person("person0","Christian","Male", null, "url",10.00,10.00);
 
     public static List<Person> CurrentGroupList = new ArrayList();
 

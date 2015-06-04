@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Base64;
@@ -15,36 +16,35 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
+
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
-import com.facebook.internal.FacebookRequestErrorClassification;
-import com.facebook.login.LoginManager;
+
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.gson.Gson;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
+
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
+
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+
 
 import Cache.Cache;
+import Models.Person;
+import RESTHelper.RESTHelper;
+
+import static com.google.android.gms.internal.zzhl.runOnUiThread;
 
 
 public class MainFragment extends Fragment {
@@ -78,47 +78,18 @@ public class MainFragment extends Fragment {
             Cache.CurrentUser.name = name;
 
             String profilePic = profile.getProfilePictureUri(500, 500).toString();
-            GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
-                @Override
-                public void onCompleted(JSONObject object, GraphResponse response) throws JSONException {
 
-                    Log.d("response", response.toString());
-                    Log.d("Object", object.toString());
-                }
-            });
-
-            request = GraphRequest.newMyFriendsRequest(accessToken, new GraphRequest.GraphJSONArrayCallback() {
-                @Override
-                public void onCompleted(JSONArray objects, GraphResponse response) {
-
-                }
-            });
-
-            Bundle parameters = new Bundle();
-            parameters.putString("fields", "id,name,email,gender,birthday");
-            request.setParameters(parameters);
-            request.executeAsync();
-            JSONObject jsonObject = request.getGraphObject();
-
-
-
-            // TODO: Get friendlist and birthday
-
+            Cache.CurrentUser.picUrl = profilePic;
 
 
             //Cache.CurrentUser()
 
             Intent intent = new Intent(getActivity(), GuiActivity.class);
-            ((MainActivity)getActivity()).startActivity(intent);
-
-            ((MainActivity)getActivity()).finish();
-
-            if(profile != null)
-            {
-                mTextDetails.setText("Welcome "+ profile.getName());
-            }
+            (getActivity()).startActivity(intent);
 
 
+
+            insertPerson();
 
         }
 
@@ -248,6 +219,41 @@ public class MainFragment extends Fragment {
 
 
     }
+
+    RESTHelper rest = new RESTHelper();
+    @SuppressWarnings("unchecked")
+    private void insertPerson() {
+        new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object... params) {
+                try {
+
+
+
+                    final String result = rest.InsertPerson(Cache.CurrentUser);
+
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+
+                            (getActivity()).finish();
+
+                        }
+                    });
+
+
+                } catch (Exception e) {
+
+                }
+                return null;
+
+            }
+        }.execute(null, null, null);
+
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

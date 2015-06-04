@@ -66,7 +66,7 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
 
         // get a persons chatrooms
 
-        getPersonChatrooms();
+
 
 
 
@@ -107,6 +107,9 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
     protected void onResume() {
         super.onResume();
         //Saetter status ved startup
+
+        Cache.CurrentChatRoomList.clear();
+        getPersonChatrooms();
         if (Cache.CurrentUser.available) {
             onOff.setChecked(true);//s��ter brugerens online status grafisk
             stranger.setTextColor(Color.BLACK);
@@ -184,14 +187,16 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
                             synchronized (recyclerAdapter) {
 
 
-                                if (chatRoomList.size() != 0) {
-                                    Cache.CurrentChatRoomList.clear();
-                                    for (ChatRoom room : chatRoomList) {
-                                        Cache.CurrentChatRoomList.add(room);
+                                if(chatRoomList != null) {
+                                    if (chatRoomList.size() != 0) {
+                                        Cache.CurrentChatRoomList.clear();
+                                        for (ChatRoom room : chatRoomList) {
+                                            Cache.CurrentChatRoomList.add(room);
 
-                                        recyclerAdapter.notifyDataSetChanged();
+                                            recyclerAdapter.notifyDataSetChanged();
+                                        }
+
                                     }
-
                                 }
 
                             }
@@ -309,6 +314,7 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
 
     public void StartStrangerChat(View view){
 
+        /*
         dialog = new ProgressDialog(GuiActivity.this);
         dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         dialog.setMessage("Finding a stranger...");
@@ -324,6 +330,7 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
         stranger.setTextColor(Color.BLACK);
         Cache.CurrentUser.available = true;
 
+        */
         findStranger();
 
 
@@ -339,21 +346,27 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
                 try {
                     //get a persons chatrooms
 
-                    final String result = rest.FindStranger(Cache.CurrentUser, Cache.radius, Cache.desiredSex = "Both", Cache.minAge = 0, Cache.maxAge = 26);
+                    Cache.CurrentUser.longitude = 6.1;
+                    Cache.CurrentUser.latitude = 7.1;
+
+                    final String result = rest.FindStranger(Cache.CurrentUser, Cache.radius = 10, Cache.desiredSex = "Both", Cache.minAge = 0, Cache.maxAge = 26);
 
 
                     Gson gson = new Gson();
-                    Cache.CurrentStranger = gson.fromJson(result,Person.class);
+                    Cache.CurrentChatRoom = gson.fromJson(result,ChatRoom.class);
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
 
+                            if(result != "null")
+                            {
+                                Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
 
-                            Toast.makeText(getApplicationContext(),result,Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getApplicationContext(), MessageActivity.class);
+                                startActivity(intent);
 
-
-
+                            }
                         }
                     });
 

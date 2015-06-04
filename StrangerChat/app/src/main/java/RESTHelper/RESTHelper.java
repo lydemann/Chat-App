@@ -17,6 +17,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -68,11 +69,19 @@ public class RESTHelper  {
 
             HttpPost post = new HttpPost(requestUrl.toString());
 
+
             post.addHeader("Authorization", "Basic " + base64EncodedCredentials);
 
-            String jsonObj = new Gson().toJson(person);
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+            nameValuePairs.add(new BasicNameValuePair("id", ""+person.id));
+            nameValuePairs.add(new BasicNameValuePair("name", person.name));
+            nameValuePairs.add(new BasicNameValuePair("sex", person.sex));
+            nameValuePairs.add(new BasicNameValuePair("picUrl", "" + person.picUrl));
+            nameValuePairs.add(new BasicNameValuePair("latitude", "" + person.latitude));
+            nameValuePairs.add(new BasicNameValuePair("longitude", "" + person.longitude));
+            nameValuePairs.add(new BasicNameValuePair("available", "" + person.available));
 
-            post.setEntity(new StringEntity(jsonObj));
+            post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
             HttpClient httpclient = new DefaultHttpClient();
 
@@ -132,26 +141,37 @@ public class RESTHelper  {
         HttpResponse response = null;
 
         try {
-            requestUrl = new URL("http://strangerchat.azure-mobile.net/tables/People");
+            requestUrl = new URL("http://strangerchat.azure-mobile.net//tables/People");
 
             HttpPost post = new HttpPost(requestUrl.toString());
 
+            /*
+            post.setHeader(HTTP.CONTENT_TYPE,
+                    "application/json");
+                    */
             post.addHeader("Authorization", "Basic " + base64EncodedCredentials);
 
-            String jsonObj = new Gson().toJson(person);
 
-            post.setEntity(new StringEntity(jsonObj));
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+            nameValuePairs.add(new BasicNameValuePair("id", ""+person.id));
+            nameValuePairs.add(new BasicNameValuePair("name", person.name));
+            nameValuePairs.add(new BasicNameValuePair("sex", person.sex));
+            nameValuePairs.add(new BasicNameValuePair("picUrl", "" + person.picUrl));
+            nameValuePairs.add(new BasicNameValuePair("latitude", "" + person.latitude));
+            nameValuePairs.add(new BasicNameValuePair("longitude", "" + person.longitude));
+            nameValuePairs.add(new BasicNameValuePair("available", "" + person.available));
+
+
+
+            post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
 
             HttpClient httpclient = new DefaultHttpClient();
-
 
             response = httpclient.execute(post);
 
             BufferedReader rd = new BufferedReader(
                     new InputStreamReader(response.getEntity().getContent()));
-
-
-
 
 
             result = null;
@@ -168,8 +188,6 @@ public class RESTHelper  {
 
             }
 
-
-            // deserialize to person object
 
         } catch(
                 IOException e
