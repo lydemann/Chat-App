@@ -156,6 +156,8 @@ public class MessageActivity extends ActionBarActivity  {
 
     private void updateChats()
     {
+        tab.removeAllViews();
+
         for(Chat chat : Cache.CurrentChatList)
         {
             if(chat.personId.equals(Cache.CurrentUser.id)) {
