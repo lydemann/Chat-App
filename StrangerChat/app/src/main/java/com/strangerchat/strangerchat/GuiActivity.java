@@ -100,6 +100,10 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
         onOff = (Switch) findViewById(R.id.switch1);//S�tter switchen s� den kan aendres
 
 
+
+        onToggleClicked(onOff);
+
+
     }
 
 
@@ -263,6 +267,8 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
             Log.d("Gui", "On");
             stranger.setTextColor(Color.BLACK);
             Cache.CurrentUser.available = true;
+            mGoogleApiClient.connect();
+
             updatePerson();
 
 
@@ -284,7 +290,7 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
                 try {
                     //get a persons chatrooms
 
-                    final String result = rest.ChangeAvailabilityOfPerson(on);
+                    final String result = rest.putPerson(Cache.CurrentUser);
 
 
 
@@ -322,15 +328,19 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
         dialog.setIndeterminate(true);
         dialog.show();
 
-        //Saetter personen til online
-        mGoogleApiClient.connect();
 
-        Log.d("Gui", "On");
-        onOff.setChecked(true);
+
+
         stranger.setTextColor(Color.BLACK);
         Cache.CurrentUser.available = true;
 
         */
+
+        //Saetter personen til online
+        mGoogleApiClient.connect();
+        Log.d("Gui", "On");
+        onOff.setChecked(true);
+
         findStranger();
 
 
@@ -346,9 +356,10 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
                 try {
                     //get a persons chatrooms
 
+                    /*
                     Cache.CurrentUser.longitude = 6.1;
                     Cache.CurrentUser.latitude = 7.1;
-
+                    */
                     final String result = rest.FindStranger(Cache.CurrentUser, Cache.radius = 10, Cache.desiredSex = "Both", Cache.minAge = 0, Cache.maxAge = 26);
 
 
@@ -359,9 +370,10 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
                         @Override
                         public void run() {
 
-                            if(result != "null")
+                            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+                            if(result.contains(null) != true)
                             {
-                                Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+
 
                                 Intent intent = new Intent(getApplicationContext(), MessageActivity.class);
                                 startActivity(intent);
@@ -400,7 +412,7 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
         Log.d(tag, "location");
         if (mLastLocation != null) {
             Log.d(tag, "lat " + mLastLocation.getLatitude());
-            Log.d(tag, "lat " + mLastLocation.getLongitude());
+            Log.d(tag, "lon " + mLastLocation.getLongitude());
             Cache.CurrentUser.latitude = mLastLocation.getLatitude();
             Cache.CurrentUser.longitude = mLastLocation.getLongitude();
 

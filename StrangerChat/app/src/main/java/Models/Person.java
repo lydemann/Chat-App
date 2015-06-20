@@ -8,12 +8,12 @@ import java.util.Date;
  */
 public class Person {
 
-    public Person(String id, String name, String sex, Date birthDay, String picUrl, double latitude, double longitude)
+    public Person(String id, String name, String sex, int age, String picUrl, double latitude, double longitude)
     {
         this.id = id;
         this.sex = sex;
         this.name = name;
-        this.birthDay = birthDay;
+        this.age = age;
         this.picUrl = picUrl;
         this.latitude = latitude;
         this.longitude = longitude;

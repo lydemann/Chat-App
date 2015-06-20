@@ -91,6 +91,8 @@ public class MainFragment extends Fragment {
 
             insertPerson();
 
+            ((MainActivity)getActivity()).finish();
+
         }
 
 
@@ -139,7 +141,7 @@ public class MainFragment extends Fragment {
 
         //check login
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        /*
+
         if (accessToken == null) {
             Log.d("tag", ">>>" + "Signed Out");
         } else {
@@ -147,9 +149,24 @@ public class MainFragment extends Fragment {
             Intent intent = new Intent(getActivity(), GuiActivity.class);
             ((MainActivity)getActivity()).startActivity(intent);
 
+            Profile profile;
+            profile = Profile.getCurrentProfile();
+
+            String userId = profile.getId();
+            String name = profile.getName();
+
+
+            Cache.CurrentUser.id = userId;
+            Cache.CurrentUser.name = name;
+
+            String profilePic = profile.getProfilePictureUri(500, 500).toString();
+
+            Cache.CurrentUser.picUrl = profilePic;
+
+
             ((MainActivity)getActivity()).finish();
         }
-        */
+
 
         setupTrackers();
 
