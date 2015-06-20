@@ -66,12 +66,6 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
 
         // get a persons chatrooms
 
-
-
-
-
-
-
         setContentView(R.layout.activity_main2);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.idRecyclerView);
@@ -100,6 +94,8 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
         onOff = (Switch) findViewById(R.id.switch1);//S�tter switchen s� den kan aendres
 
 
+
+        mGoogleApiClient.connect();
 
         onToggleClicked(onOff);
 
@@ -170,7 +166,7 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
     }
 
     @SuppressWarnings("unchecked")
-    private void getPersonChatrooms() {
+    public void getPersonChatrooms() {
         new AsyncTask() {
             @Override
             protected Object doInBackground(Object... params) {
@@ -366,14 +362,17 @@ public class GuiActivity extends ActionBarActivity implements OnItemRecycleViewC
                     Gson gson = new Gson();
                     Cache.CurrentChatRoom = gson.fromJson(result,ChatRoom.class);
 
+
+
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
 
-                            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
-                            if(result.contains(null) != true)
+
+                            if(result != "null")
                             {
 
+                                Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
 
                                 Intent intent = new Intent(getApplicationContext(), MessageActivity.class);
                                 startActivity(intent);

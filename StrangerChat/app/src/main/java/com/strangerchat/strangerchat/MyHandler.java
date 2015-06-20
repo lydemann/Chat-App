@@ -27,7 +27,12 @@ public class MyHandler extends NotificationsHandler{
         ctx = context;
         String nhMessage = bundle.getString("message");
 
+        if (nhMessage.contains("Stranger found")) {
+            GUIActivity.getPersonChatrooms();
+
+        }
         sendNotification(nhMessage);
+
         //GUIActivity.DialogNotify("Received Notification",nhMessage);
     }
 
@@ -51,7 +56,7 @@ public class MyHandler extends NotificationsHandler{
 
 
         PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0,
-                new Intent(ctx, MainActivity.class), 0);
+                new Intent(ctx, GuiActivity.class), 0);
 
         Vibrator v = (Vibrator) GUIActivity.getSystemService(Context.VIBRATOR_SERVICE);
         // Vibrate for 500 milliseconds
